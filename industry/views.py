@@ -203,5 +203,5 @@ class user_applied_List (APIView):
 
         return Response(u_serializer.data)
 
-    def post(self,request,id):
-        pass
+    # def post(self,request,id):
+    #     pass
