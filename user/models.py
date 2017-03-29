@@ -14,7 +14,8 @@ class Aspirant(models.Model):
     dob = models.DateField(max_length=30, null=True, blank=True)
     password = models.CharField(max_length=30, blank=True, null=True)
     phone = models.CharField(max_length=10, blank=True, null=True)
-    # location = models.CharField(max_length=1000, blank=True, null=True)
+    # change default in location
+    location = models.CharField(max_length=1000, default="Lucknow")
     email = models.EmailField(null=True, blank=True)
     gender = models.CharField(max_length=30, blank=True, null=True)
     date_of_joining = models.DateField(auto_now_add=True)
@@ -30,6 +31,12 @@ class Interest(models.Model):
     def __str__(self):
         return str(self.name)
 
+class Locations(models.Model):
+    user = models.ForeignKey(Aspirant, on_delete=models.CASCADE)
+    location = models.CharField(max_length=200, blank=True, null=True)
+
+    def __str__(self):
+        return str(self.loaction)
 
 class Aspirant_skill(models.Model):
     user = models.ForeignKey(Aspirant, on_delete=models.CASCADE)

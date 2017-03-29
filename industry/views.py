@@ -147,17 +147,25 @@ class jobs_id_List(APIView):
 #         "job_id":xyz,
 #         "user_id":abc,
 #     }]
-    def put(self, request, pk, format = None):
-        job = self.get_object(pk)
-        j_id_serializer = jobappliedSerializer(job , data = request.data)
+    def post(self, request, pk):
+        j_id_serializer = jobappliedSerializer(data = request.data)
         if j_id_serializer.is_valid():
             j_id_serializer.save()
             return Response(content, status=status.HTTP_201_CREATED)
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
+    def put(self, request, pk, format = None):
+        job = self.get_object(pk)
+        j_serializer = jobSerializer(job , data = request.data)
+        if j_serializer.is_valid():
+            j_serializer.save()
+            return Response(content, status=status.HTTP_201_CREATED)
+        return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 # jobskill created and retrieve
-# validation left
+# todo validation left
 
 class jobskillList(APIView):
     def get_object(self, job_from):

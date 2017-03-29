@@ -23,6 +23,7 @@ content = [
         'id': 0
     }
 ]
+
 error = [
     {
         'error': 1,
@@ -114,11 +115,31 @@ class InterestList(APIView):
 
     def post(self,request, id):
         data =request.data
-        data["user"] = id
-        i_serializer = interestSerializer(data=data)
-        if i_serializer.is_valid():
-            i_serializer.save()
-            return Response(content, status=status.HTTP_200_OK)
-        return Response(error, status=status.HTTP_400_BAD_REQUEST)
+        Interest.objects.filter(user=id).delete()
+        for d in data:
+            d["user"] = id
+            i_serializer = interestSerializer(data=d)
+            if i_serializer.is_valid():
+                i_serializer.save()
+                # return Response(content, status=status.HTTP_200_OK)
+        return Response(content, status=status.HTTP_200_OK)
 
+class LocationList(APIView):
+    def get_object(self, user):
+        return Locations.objects.filter(user = user)
 
+    def get(self,request, id):
+        location = self.get_object(id)
+        l_serializer = locationSerializer(location,many=True)
+        return Response(l_serializer.data)
+
+    def post(self,request, id):
+        data =request.data
+        Locations.objects.filter(user=id).delete()
+        for d in data:
+            d["user"] = id
+            l_serializer = locationSerializer(data=d)
+            if l_serializer.is_valid():
+                l_serializer.save()
+                # return Response(content, status=status.HTTP_200_OK)
+        return Response(content, status=status.HTTP_200_OK)

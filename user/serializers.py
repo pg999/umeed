@@ -45,6 +45,11 @@ class interestSerializer(serializers.ModelSerializer):
         model=Interest
         fields='__all__'
 
+class locationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Locations
+        fields='__all__'
+
 class aspirantskillSerializer(serializers.ModelSerializer):
     class Meta:
         model=Aspirant_skill

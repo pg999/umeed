@@ -32,3 +32,20 @@ class Enrollment(models.Model):
 
     def __str__(self):
         return str(self.user)
+
+class Test(models.Model):
+    module = models.ForeignKey(Module, on_delete=models.CASCADE)
+    question = models.CharField(max_length=1000)
+    option1 =models.CharField(max_length=1000)
+    option2 =models.CharField(max_length=1000)
+    option3 =models.CharField(max_length=1000)
+    option4 =models.CharField(max_length=1000)
+    answer =models.IntegerField()
+
+class Marks(models.Model):
+    module = models.ForeignKey(Module, on_delete=models.CASCADE)
+    user = models.ForeignKey(Aspirant, on_delete=models.CASCADE)
+    marks = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.module)

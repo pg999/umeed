@@ -4,3 +4,4 @@ from .models import *
 admin.site.register(Aspirant)
 admin.site.register(Aspirant_skill)
 admin.site.register(Interest)
+admin.site.register(Locations)

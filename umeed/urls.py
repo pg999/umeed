@@ -2,11 +2,12 @@ from django.conf.urls import url,include
 from django.contrib import admin
 from rest_framework.urlpatterns import format_suffix_patterns
 from user import views
-from  link.views import CourseList,ModuleList, EnrollList, course_analysisList
+from  link.views import CourseList,ModuleList, EnrollList, course_analysisList, course_moduleList, module_idList, \
+    testList, marksList
 from  industry.views import *
 from django.conf import settings
 from django.conf.urls.static import static
-from user.views import ProfileList, job_trendList
+from user.views import ProfileList, job_trendList, LocationList
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -25,4 +26,9 @@ urlpatterns = [
     url(r'^jobtrend/$', job_trendList.as_view()),
     url(r'^coursetrend/$', course_analysisList.as_view()),
     url(r'^companyprofile/(?P<id>[0-9]+)/$', Company_ProfileList.as_view()),
+    url(r'^location/(?P<id>[0-9]+)/$', LocationList.as_view()),
+    url(r'^coursemodule/(?P<id>[0-9]+)/$', course_moduleList.as_view()),
+    url(r'^moduleid/(?P<pk>[0-9]+)/$', module_idList.as_view()),
+    url(r'^test/(?P<id>[0-9]+)/$', testList.as_view()),
+    url(r'^marks/(?P<moduleid>[0-9]+)/(?P<userid>[0-9]+)/$', marksList.as_view()),
 ]

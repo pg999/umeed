@@ -48,13 +48,13 @@ class CourseList(APIView):
         # summing up interest
         for val in interest:
             i.append(val.name)
-        #summing up all courses according to each interest
+        # summing up all courses according to each interest
         c = Course.objects.all()
-
         for val in i:
             for x in c:
-                if fuzz.partial_ratio(val,x.description) > 80:
-                    c_serializer.append({"name":x.name,"category":x.category,"founder":x.founder,"description":x.description})
+                if fuzz.partial_ratio(val, x.description) > 80:
+                    c_serializer.append(
+                        {"name": x.name, "category": x.category, "founder": x.founder, "description": x.description})
 
         return Response(c_serializer)
 
@@ -84,14 +84,14 @@ class ModuleList(APIView):
 
 
 class EnrollList(APIView):
-    def get_object(self,user):
-        return Enrollment.objects.filter(user = user)
+    def get_object(self, user):
+        return Enrollment.objects.filter(user=user)
 
     def get(self, request, id):
         enroll = self.get_object(id)
         e_serializer = enrollSerializer(enroll, many=True)
         for val in e_serializer.data:
-            val['course_name'] = Course.objects.get(id = val['course_enrolled']).name
+            val['course_name'] = Course.objects.get(id=val['course_enrolled']).name
         return Response(e_serializer.data)
 
     def post(self, request, id):
@@ -101,18 +101,91 @@ class EnrollList(APIView):
             return Response(content, status=status.HTTP_201_CREATED)
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
+
 # course analysis
 class course_analysisList(APIView):
-
-    def get(self,request):
+    def get(self, request):
         x = Enrollment.objects.values('course_enrolled').annotate(count=Count('user')).distinct()
         for val in x:
-            val["course_name"] = Course.objects.get(pk = val['course_enrolled']).name
+            val["course_name"] = Course.objects.get(pk=val['course_enrolled']).name
         return Response(x)
 
-class student_analysisList(APIView):
 
-    def get(self,request):
+class student_analysisList(APIView):
+    def get(self, request):
         pass
+
+    def post(self, request):
+        pass
+
+
+class course_moduleList(APIView):
+    def get_object(self, id):
+        return Course.objects.get(id=id)
+
+    def get(self, request, id):
+        course = self.get_object(id)
+        c_serializer = courseSerializer(course)
+        module = Module.objects.filter(main_course=id)
+        m_serializer = moduleSerializer(module, many=True)
+        c_serializer.data['modules'] = m_serializer.data
+        return Response(c_serializer.data)
+
+    def put(self, request, id, foramt=None):
+        course = self.get_object(id)
+        c_serializer = courseSerializer(course, data=request.data)
+        if c_serializer.is_valid():
+            c_serializer.save()
+            return Response(content, status=status.HTTP_201_CREATED)
+        return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+
+class module_idList(APIView):
+    def get_object(self, pk):
+        return Module.objects.get(pk=pk)
+
+    def get(self, request, pk):
+        module = self.get_object(pk)
+        m_serializer = moduleSerializer(module)
+        return Response(m_serializer.data)
+
+    def put(self, request, pk, format=None):
+        module = self.get_object(pk)
+        m_serializer = moduleSerializer(module, data=request.data)
+        if m_serializer.is_valid():
+            m_serializer.save()
+            return Response(content, status=status.HTTP_201_CREATED)
+        return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+class testList(APIView):
+    def get_object(self,module):
+        return Test.objects.filter(module = module)
+
+    def get(self,request , id):
+        test  = self.get_object(id)
+        t_serializer = testSerializer(test, many=True)
+        return Response(t_serializer.data)
+
     def post(self,request):
-        pass
+        t_serializer = testSerializer(data=request.data)
+        if t_serializer.is_valid():
+            t_serializer.save()
+            return Response(content, status=status.HTTP_201_CREATED)
+        return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+class marksList(APIView):
+    def get(self,request,moduleid, userid):
+        mark = Marks.objects.all()
+        m_serializer = marksSerializer(mark, many= True)
+        return Response(m_serializer.data)
+    # [{
+    #    "module":moduleid,
+    #     "user":userid,
+    #     "marks":marks
+    # }]
+    def post(self,request, moduleid, userid):
+        m_serializer = marksSerializer(data=request.data)
+        if m_serializer.is_valid():
+            m_serializer.save()
+            return Response(content, status=status.HTTP_201_CREATED)
+        return Response(error, status=status.HTTP_400_BAD_REQUEST)

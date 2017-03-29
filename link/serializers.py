@@ -33,3 +33,13 @@ class enrollSerializer(serializers.ModelSerializer):
     class Meta:
         model = Enrollment
         fields = '__all__'
+
+class testSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Test
+        fields = '__all__'
+
+class marksSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Marks
+        fields = '__all__'
