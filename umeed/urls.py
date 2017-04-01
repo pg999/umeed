@@ -6,7 +6,7 @@ from  link.views import *
 from  industry.views import *
 from django.conf import settings
 from django.conf.urls.static import static
-from user.views import ProfileList, job_trendList, LocationList
+from user.views import ProfileList, job_trendList, LocationList, searchCourse, searchJob
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -34,4 +34,7 @@ urlpatterns = [
     url(r'^ngoprofile/(?P<id>[0-9]+)/$', NProfileList.as_view()),
     url(r'^marks/(?P<moduleid>[0-9]+)/(?P<userid>[0-9]+)/$', marksList.as_view()),
     url(r'^loadjobs/(?P<pk>[0-9]+)/$', Company_job_List.as_view()),  # added
+    url(r'^searchcourse/$', searchCourse.as_view()),  # added
+    url(r'^searchjob/$', searchJob.as_view()),  # added
+    url(r'^loadcourses/$', loadcourses.as_view()),  # added
 ]

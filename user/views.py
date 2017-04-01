@@ -1,6 +1,7 @@
 from django.db.models import *
+from fuzzywuzzy import fuzz
 from industry.models import Job
-from link.models import Enrollment
+from link.models import Enrollment, Course
 from link.serializers import enrollSerializer
 from rest_framework import status
 from rest_framework.response import Response
@@ -144,8 +145,36 @@ class LocationList(APIView):
                 # return Response(content, status=status.HTTP_200_OK)
         return Response(content, status=status.HTTP_200_OK)
 
-class search(APIView):
-    def post(self,request):
+
+class searchCourse(APIView):
+    def get(self, request):
+        return Response("search karobey")
+
+    def post(self, request):
+        data = request.data
+
+        search = data['search']
+        i = []
+        course = Course.objects.all()
+        for x in course:
+            if fuzz.partial_ratio(search, x.description) > 80:
+                i.append({"id": x.id, "name": x.name, "category": x.category, "founder": x.founder,
+                          "description": x.description})
+        return Response(i)
+
+
+class searchJob(APIView):
+    def get(self, request):
+        return Response("search karobey")
+
+    def post(self, request):
         data = request.data
         search = data['search']
-
+        i = []
+        job = Job.objects.all()
+        for x in job:
+            if fuzz.partial_ratio(search, x.description) > 80:
+                i.append({"id": x.id, "company_from": x.company_from, "title": x.title, "description": x.description,
+                          "vacancies": x.vacancies,
+                          "category": x.category, "stipend": x.stipend})
+        return Response(i)

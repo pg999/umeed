@@ -255,3 +255,10 @@ class NProfileList(APIView):
             u_serializer.save()
             return Response(content, status=status.HTTP_200_OK)
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+
+class loadcourses(APIView):
+    def get(self,request):
+        course = Course.objects.all()
+        c_serializer = courseSerializer(course, many=True)
+        return Response(c_serializer.data)

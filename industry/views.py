@@ -7,10 +7,8 @@ from link.serializers import enrollSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from user.models import *
 from user.serializers import *
 
-from .models import *
 from .serializers import *
 
 # from django.views.decorators.csrf import csrf_exempt
@@ -67,7 +65,7 @@ class Company_ProfileList(APIView):
 
     def patch(self, request, id, format=None):
         company = self.get_object(id)
-        c_serializer = companySerializer(company, data=request.data, partial= True)
+        c_serializer = companySerializer(company, data=request.data, partial=True)
         if c_serializer.is_valid():
             c_serializer.save()
             return Response(content, status=status.HTTP_201_CREATED)
@@ -127,11 +125,12 @@ class JobList(APIView):
 
     def post(self, request, pre):
         d = request.data
-        d['category'] = Company.objects.get(id=request.data['company_from']).category
         j_serializer = jobSerializer(data=d)
         if j_serializer.is_valid():
             j_serializer.save()
             content[0]['id'] = j_serializer.data['id']
+            x = Company.objects.get(id=request.data['company_from']).category
+            Job.objects.filter(pk=content[0]['id']).update(category=x)
             return Response(content, status=status.HTTP_201_CREATED)
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
