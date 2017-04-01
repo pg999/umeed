@@ -17,6 +17,7 @@ class NGO(models.Model):
 
 
 class Course(models.Model):
+    ngo_from = models.ForeignKey(NGO, on_delete=models.CASCADE)
     founder = models.CharField(max_length=200, blank=True, null=True)
     name = models.CharField(max_length=200, blank=True, null=True)
     category = models.CharField(max_length=200, blank=True, null=True)

@@ -31,9 +31,11 @@ urlpatterns = [
     url(r'^coursemodule/(?P<id>[0-9]+)/$', course_moduleList.as_view()),
     url(r'^moduleid/(?P<pk>[0-9]+)/$', module_idList.as_view()),
     url(r'^test/(?P<id>[0-9]+)/$', testList.as_view()),
-    url(r'^ngoprofile/(?P<id>[0-9]+)/$', NProfileList.as_view()),
+    url(r'^ngoprofile/(?P<pk>[0-9]+)/$', NProfileList.as_view()),
+    url(r'^postedjobs/(?P<id>[0-9]+)/$', postedjobs.as_view()),
     url(r'^marks/(?P<moduleid>[0-9]+)/(?P<userid>[0-9]+)/$', marksList.as_view()),
     url(r'^loadjobs/(?P<pk>[0-9]+)/$', Company_job_List.as_view()),  # added
+    url(r'^postedcourse/(?P<id>[0-9]+)/$', postedcourse.as_view()),  # added
     url(r'^searchcourse/$', searchCourse.as_view()),  # added
     url(r'^searchjob/$', searchJob.as_view()),  # added
     url(r'^loadcourses/$', loadcourses.as_view()),  # added

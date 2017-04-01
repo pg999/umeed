@@ -72,6 +72,7 @@ class Company_ProfileList(APIView):
             return Response(content, status=status.HTTP_201_CREATED)
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
+
 # jobs created and retrieve
 # todo validation
 
@@ -214,3 +215,13 @@ class Company_job_List(APIView):
 
     def post(self, request, id):
         pass
+
+
+class postedjobs(APIView):
+    def get_object(self, id):
+        return Job.objects.filter(company_from=id)
+
+    def get(self, request, id):
+        job = self.get_object(id)
+        j_serializer = jobSerializer(job, many=True)
+        return Response(j_serializer.data)

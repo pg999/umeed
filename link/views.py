@@ -67,6 +67,7 @@ class CourseList(APIView):
         c_serializer = courseSerializer(data=request.data)
         if c_serializer.is_valid():
             c_serializer.save()
+            content[0]['id'] = c_serializer.data['id']
             return Response(content, status=status.HTTP_201_CREATED)
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
@@ -202,7 +203,7 @@ class testList(APIView):
         t_serializer = testSerializer(test, many=True)
         return Response(t_serializer.data)
 
-    def post(self, request):
+    def post(self, request, id):
         t_serializer = testSerializer(data=request.data)
         if t_serializer.is_valid():
             t_serializer.save()
@@ -267,4 +268,20 @@ class loadcourses(APIView):
     def get(self, request):
         course = Course.objects.all()
         c_serializer = courseSerializer(course, many=True)
+        return Response(c_serializer.data)
+
+
+class postedcourse(APIView):
+    def get_object(self, id):
+        return Course.objects.filter(ngo_from=id)
+
+    def get(self, request, id):
+        courses = self.get_object(id)
+        c_serializer = courseSerializer(courses, many=True)
+        for val in c_serializer.data:
+            x = Enrollment.objects.filter(course_enrolled=val['id']).values('course_enrolled').annotate(count=Count('user'))
+            if x:
+                val['enrolled'] = x[0]['count']
+            else:
+                val['enrolled'] = 0
         return Response(c_serializer.data)
