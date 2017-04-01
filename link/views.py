@@ -4,14 +4,14 @@
 # from django.shortcuts import get_object_or_404
 # from rest_framework.decorators import api_view
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from .serializers import *
-from .models import *
-from user.models import Interest
-from fuzzywuzzy import fuzz
 from django.db.models import *
+from fuzzywuzzy import fuzz
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from user.models import Interest
+
+from .serializers import *
 
 # from django.views.decorators.csrf import csrf_exempt
 # from rest_framework.renders import JSONRenderer
@@ -48,15 +48,20 @@ class CourseList(APIView):
         # summing up interest
         for val in interest:
             i.append(val.name)
+        c = Course.objects.filter(online=True)
+        c_l_serializer = courseSerializer(c, many=True)
         # summing up all courses according to each interest
-        c = Course.objects.all()
         for val in i:
             for x in c:
                 if fuzz.partial_ratio(val, x.description) > 80:
                     c_serializer.append(
-                        {"name": x.name, "category": x.category, "founder": x.founder, "description": x.description})
-
-        return Response(c_serializer)
+                        {"id": x.id, "name": x.name, "category": x.category, "founder": x.founder,
+                         "description": x.description})
+        result = [{
+            "matching interest": c_serializer,
+            "all interest": c_l_serializer.data
+        }]
+        return Response(result)
 
     def post(self, request, id):
         c_serializer = courseSerializer(data=request.data)
@@ -64,6 +69,33 @@ class CourseList(APIView):
             c_serializer.save()
             return Response(content, status=status.HTTP_201_CREATED)
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+
+class WorkshopList(APIView):
+    def get_object(self, user):
+        return Interest.objects.filter(user=user)
+
+    def get(self, request, id):
+        interest = self.get_object(id)
+        i = []
+        c_serializer = []
+        # summing up interest
+        for val in interest:
+            i.append(val.name)
+        c = Course.objects.filter(online=False)
+        c_l_serializer = courseSerializer(c, many=True)
+        # summing up all courses according to each interest
+        for val in i:
+            for x in c:
+                if fuzz.partial_ratio(val, x.description) > 80:
+                    c_serializer.append(
+                        {"id": x.id, "name": x.name, "category": x.category, "founder": x.founder,
+                         "description": x.description})
+        result = [{
+            "matching interest": c_serializer,
+            "all interest": c_l_serializer.data
+        }]
+        return Response(result)
 
 
 # module created and retrieve
@@ -129,7 +161,7 @@ class course_moduleList(APIView):
         module = Module.objects.filter(main_course=id)
         m_serializer = moduleSerializer(module, many=True)
         c_serializer.data['modules'] = m_serializer.data
-        return Response(c_serializer.data)
+        return Response(m_serializer.data)  # changed
 
     def put(self, request, id, foramt=None):
         course = self.get_object(id)
@@ -157,33 +189,36 @@ class module_idList(APIView):
             return Response(content, status=status.HTTP_201_CREATED)
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
-class testList(APIView):
-    def get_object(self,module):
-        return Test.objects.filter(module = module)
 
-    def get(self,request , id):
-        test  = self.get_object(id)
+class testList(APIView):
+    def get_object(self, module):
+        return Test.objects.filter(module=module)
+
+    def get(self, request, id):
+        test = self.get_object(id)
         t_serializer = testSerializer(test, many=True)
         return Response(t_serializer.data)
 
-    def post(self,request):
+    def post(self, request):
         t_serializer = testSerializer(data=request.data)
         if t_serializer.is_valid():
             t_serializer.save()
             return Response(content, status=status.HTTP_201_CREATED)
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
+
 class marksList(APIView):
-    def get(self,request,moduleid, userid):
+    def get(self, request, moduleid, userid):
         mark = Marks.objects.all()
-        m_serializer = marksSerializer(mark, many= True)
+        m_serializer = marksSerializer(mark, many=True)
         return Response(m_serializer.data)
+
     # [{
     #    "module":moduleid,
     #     "user":userid,
     #     "marks":marks
     # }]
-    def post(self,request, moduleid, userid):
+    def post(self, request, moduleid, userid):
         m_serializer = marksSerializer(data=request.data)
         if m_serializer.is_valid():
             m_serializer.save()

@@ -58,9 +58,9 @@ class Company_ProfileList(APIView):
     def get_object(self,pk):
         return Company.objects.get(pk= pk)
 
-    def get(self, request, id):
-        company = self.get_object(id)
-        c_serializer = companySerializer(company, many=True)
+    def get(self, request,id):
+        company = Company.objects.get(id=id)
+        c_serializer = companySerializer(company)
         return Response(c_serializer.data)
 
     def put(self,request, id, format = None):
@@ -129,6 +129,7 @@ class JobList(APIView):
         j_serializer = jobSerializer(data= d)
         if j_serializer.is_valid():
             j_serializer.save()
+            
             return Response(content, status=status.HTTP_201_CREATED)
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
@@ -169,7 +170,7 @@ class jobs_id_List(APIView):
 
 class jobskillList(APIView):
     def get_object(self, job_from):
-        return Job.objects.filter(job_from = job_from)
+        return Job_skills.objects.filter(job_from = job_from)
 
     def get(self, request, id):
         job_skills = self.get_object(id)
@@ -213,3 +214,15 @@ class user_applied_List (APIView):
 
     # def post(self,request,id):
     #     pass
+
+	
+
+class Company_job_List(APIView):
+	# get a particular job
+    def get(self, request, pk):
+        jobs= Job.objects.filter(company_from=pk).order_by("date_of_posting")
+        j_serializer = jobSerializer(jobs, many=True)
+        return Response(j_serializer.data)
+
+    def post(self,request,id):
+        pass

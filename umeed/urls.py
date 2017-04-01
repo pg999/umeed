@@ -1,9 +1,8 @@
-from django.conf.urls import url,include
+from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework.urlpatterns import format_suffix_patterns
 from user import views
-from  link.views import CourseList,ModuleList, EnrollList, course_analysisList, course_moduleList, module_idList, \
-    testList, marksList
+from  link.views import *
 from  industry.views import *
 from django.conf import settings
 from django.conf.urls.static import static
@@ -14,6 +13,7 @@ urlpatterns = [
     url(r'^aspirant/$', views.AspirantsList.as_view()),
     url(r'^login/$', views.LoginList.as_view()),
     url(r'^course/(?P<id>[0-9]+)/$', CourseList.as_view()),
+    url(r'^workshop/(?P<id>[0-9]+)/$', WorkshopList.as_view()),
     url(r'^module/$', ModuleList.as_view()),
     url(r'^interest/(?P<id>[0-9]+)/$', views.InterestList.as_view()),
     url(r'^company/$', CompanyList.as_view()),
@@ -31,4 +31,6 @@ urlpatterns = [
     url(r'^moduleid/(?P<pk>[0-9]+)/$', module_idList.as_view()),
     url(r'^test/(?P<id>[0-9]+)/$', testList.as_view()),
     url(r'^marks/(?P<moduleid>[0-9]+)/(?P<userid>[0-9]+)/$', marksList.as_view()),
+    # url(r'^loadcourses/$', AllCourseList.as_view()),  # added
+    url(r'^loadjobs/(?P<pk>[0-9]+)/$', Company_job_List.as_view()),  # added
 ]

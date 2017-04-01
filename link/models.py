@@ -9,6 +9,7 @@ class Course(models.Model):
     category = models.CharField(max_length=200, blank=True, null=True)
     detail = models.CharField(max_length=1000, blank=True, null=True)
     description = models.CharField(max_length=1000, blank=True, null=True)
+    online = models.BooleanField(default = True)
 
     def __str__(self):
         return str(self.id)
@@ -35,12 +36,12 @@ class Enrollment(models.Model):
 
 class Test(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE)
-    question = models.CharField(max_length=1000)
-    option1 =models.CharField(max_length=1000)
-    option2 =models.CharField(max_length=1000)
-    option3 =models.CharField(max_length=1000)
-    option4 =models.CharField(max_length=1000)
-    answer =models.IntegerField()
+    question = models.CharField(max_length=1000,blank=True,null=True)
+    option1 =models.CharField(max_length=1000,blank=True,null=True)
+    option2 =models.CharField(max_length=1000,blank=True,null=True)
+    option3 =models.CharField(max_length=1000,blank=True,null=True)
+    option4 =models.CharField(max_length=1000,blank=True,null=True)
+    answer =models.CharField(max_length=200,blank=True,null=True)											#changed it to charfield
 
 class Marks(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE)
