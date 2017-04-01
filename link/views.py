@@ -148,9 +148,11 @@ class course_analysisList(APIView):
 class student_analysisList(APIView):
     def get(self, request):
         # data = request.data
-        c = Enrollment.objects.filter(location='lucknow').values('course_enrolled').annotate(
-            count=Count('user')).distinct()
-        print(c)
+        value = Enrollment.objects.filter(location='Lucknow').values('course_enrolled').annotate(count=Count('user'))
+        for val in value:
+            val['course_name'] = Course.objects.get(pk=val['course_enrolled']).name
+        return Response(value)
+
 
 class course_moduleList(APIView):
     def get_object(self, id):
