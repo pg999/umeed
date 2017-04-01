@@ -1,7 +1,15 @@
 from __future__ import unicode_literals
+
 from django.db import models
 from user.models import Aspirant
 
+
+class NGO(models.Model):
+    name = models.CharField(max_length=40, blank=True, null=True)
+    address = models.CharField(max_length=100, blank=True, null=True)
+    pincode = models.CharField(max_length=40, blank=True, null=True)
+    password = models.CharField(max_length=30, blank=True, null=True)
+    phone = models.CharField(max_length=10, blank=True, null=True)
 
 class Course(models.Model):
     founder = models.CharField(max_length=200, blank=True, null=True)
@@ -9,7 +17,7 @@ class Course(models.Model):
     category = models.CharField(max_length=200, blank=True, null=True)
     detail = models.CharField(max_length=1000, blank=True, null=True)
     description = models.CharField(max_length=1000, blank=True, null=True)
-    online = models.BooleanField(default = True)
+    online = models.BooleanField(default=True)
 
     def __str__(self):
         return str(self.id)
@@ -34,14 +42,16 @@ class Enrollment(models.Model):
     def __str__(self):
         return str(self.user)
 
+
 class Test(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE)
-    question = models.CharField(max_length=1000,blank=True,null=True)
-    option1 =models.CharField(max_length=1000,blank=True,null=True)
-    option2 =models.CharField(max_length=1000,blank=True,null=True)
-    option3 =models.CharField(max_length=1000,blank=True,null=True)
-    option4 =models.CharField(max_length=1000,blank=True,null=True)
-    answer =models.CharField(max_length=200,blank=True,null=True)											#changed it to charfield
+    question = models.CharField(max_length=1000, blank=True, null=True)
+    option1 = models.CharField(max_length=1000, blank=True, null=True)
+    option2 = models.CharField(max_length=1000, blank=True, null=True)
+    option3 = models.CharField(max_length=1000, blank=True, null=True)
+    option4 = models.CharField(max_length=1000, blank=True, null=True)
+    answer = models.CharField(max_length=200, blank=True, null=True)  # changed it to Char
+
 
 class Marks(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE)

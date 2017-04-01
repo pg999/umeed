@@ -145,10 +145,7 @@ class course_analysisList(APIView):
 
 class student_analysisList(APIView):
     def get(self, request):
-        pass
-
-    def post(self, request):
-        pass
+        c = Aspirant.objects.values('location').distinct()
 
 
 class course_moduleList(APIView):
@@ -223,4 +220,38 @@ class marksList(APIView):
         if m_serializer.is_valid():
             m_serializer.save()
             return Response(content, status=status.HTTP_201_CREATED)
+        return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+
+class NGO(APIView):
+    def get(self, request):
+        u = NGO.objects.all()
+        u_serializer = NGOSerializer(u, many=True)
+
+        return Response(u_serializer.data)
+
+    def post(self, request):
+        n_serializer = NGOSerializer(data=request.data)
+        if n_serializer.is_valid():
+            n_serializer.save()
+            content[0]['id'] = n_serializer.data['id']
+            return Response(content, status=status.HTTP_201_CREATED)
+        return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+
+class NProfileList(APIView):
+    def get_object(self, pk):
+        return NGO.objects.get(pk=pk)
+
+    def get(self, request, pk):
+        user = self.get_object(pk)
+        u_serializer = NGOSerializer(user)
+        return Response(u_serializer.data)
+
+    def put(self, request, pk, format=None):
+        user = self.get_object(pk)
+        u_serializer = NGOSerializer(user, data=request.data)
+        if u_serializer.is_valid():
+            u_serializer.save()
+            return Response(content, status=status.HTTP_200_OK)
         return Response(error, status=status.HTTP_400_BAD_REQUEST)

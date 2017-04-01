@@ -36,7 +36,7 @@ class Locations(models.Model):
     location = models.CharField(max_length=200, blank=True, null=True)
 
     def __str__(self):
-        return str(self.loaction)
+        return str(self.location)
 
 class Aspirant_skill(models.Model):
     user = models.ForeignKey(Aspirant, on_delete=models.CASCADE)

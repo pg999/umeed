@@ -41,6 +41,7 @@ class AspirantsList(APIView):
         a_serializer = aspirantSerializer(data=request.data)
         if a_serializer.is_valid():
             a_serializer.save()
+            content[0]['id'] = a_serializer.data['id']
             return Response(content, status=status.HTTP_201_CREATED)
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
@@ -142,3 +143,9 @@ class LocationList(APIView):
                 l_serializer.save()
                 # return Response(content, status=status.HTTP_200_OK)
         return Response(content, status=status.HTTP_200_OK)
+
+class search(APIView):
+    def post(self,request):
+        data = request.data
+        search = data['search']
+
