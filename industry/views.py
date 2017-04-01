@@ -46,6 +46,7 @@ class CompanyList(APIView):
         c_serializer = companySerializer(data=request.data)
         if c_serializer.is_valid():
             c_serializer.save()
+            content[0]['id'] = c_serializer.data['id']
             return Response(content, status=status.HTTP_201_CREATED)
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
@@ -70,22 +71,6 @@ class Company_ProfileList(APIView):
             c_serializer.save()
             return Response(content, status=status.HTTP_201_CREATED)
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
-
-
-# login of company person
-# todo validation
-
-class LoginList(APIView):
-    def get(self, request):
-        return Response()
-
-    def post(self, request):
-        l = loginSerializer(data=request.data)
-        content = l.xyz(data=request.data)
-        if content[0]['id'] != 0:
-            return Response(content, status=status.HTTP_200_OK)
-        return Response(error, status=status.HTTP_400_BAD_REQUEST)
-
 
 # jobs created and retrieve
 # todo validation

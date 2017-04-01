@@ -7,9 +7,14 @@ from user.models import Aspirant
 class NGO(models.Model):
     name = models.CharField(max_length=40, blank=True, null=True)
     address = models.CharField(max_length=100, blank=True, null=True)
+    email = models.CharField(max_length=100, blank=True, null=True)
     pincode = models.CharField(max_length=40, blank=True, null=True)
     password = models.CharField(max_length=30, blank=True, null=True)
     phone = models.CharField(max_length=10, blank=True, null=True)
+
+    def __str__(self):
+        return str(self.id)
+
 
 class Course(models.Model):
     founder = models.CharField(max_length=200, blank=True, null=True)
@@ -36,6 +41,7 @@ class Module(models.Model):
 class Enrollment(models.Model):
     course_enrolled = models.ForeignKey(Course, on_delete=models.CASCADE)
     user = models.ForeignKey(Aspirant, on_delete=models.CASCADE)
+    location = models.CharField(max_length=100, null=True, blank=True)
     enrolled_on = models.DateField(auto_now_add=True)
     completion = models.FloatField(blank=True, null=True)
 

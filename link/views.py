@@ -130,6 +130,8 @@ class EnrollList(APIView):
         e_serializer = enrollSerializer(data=request.data)
         if e_serializer.is_valid():
             e_serializer.save()
+            x = Aspirant.objects.get(id=request.data['user']).location
+            Enrollment.objects.filter(pk=e_serializer.data['id']).update(location=x)
             return Response(content, status=status.HTTP_201_CREATED)
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
@@ -145,8 +147,10 @@ class course_analysisList(APIView):
 
 class student_analysisList(APIView):
     def get(self, request):
-        c = Aspirant.objects.values('location').distinct()
-
+        # data = request.data
+        c = Enrollment.objects.filter(location='lucknow').values('course_enrolled').annotate(
+            count=Count('user')).distinct()
+        print(c)
 
 class course_moduleList(APIView):
     def get_object(self, id):
@@ -223,7 +227,7 @@ class marksList(APIView):
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
 
-class NGO(APIView):
+class ngo(APIView):
     def get(self, request):
         u = NGO.objects.all()
         u_serializer = NGOSerializer(u, many=True)
@@ -258,7 +262,7 @@ class NProfileList(APIView):
 
 
 class loadcourses(APIView):
-    def get(self,request):
+    def get(self, request):
         course = Course.objects.all()
         c_serializer = courseSerializer(course, many=True)
         return Response(c_serializer.data)

@@ -1,7 +1,7 @@
 from django.db.models import *
 from fuzzywuzzy import fuzz
-from industry.models import Job
-from link.models import Enrollment, Course
+from industry.models import Job, Company
+from link.models import Enrollment, Course, NGO
 from link.serializers import enrollSerializer
 from rest_framework import status
 from rest_framework.response import Response
@@ -95,11 +95,29 @@ class LoginList(APIView):
         return Response()
 
     def post(self, request):
-        l = loginSerializer(data=request.data)
-        content = l.xyz(data=request.data)
-        if content[0]['id'] != 0:
-            return Response(content, status=status.HTTP_200_OK)
-        return Response(error, status=status.HTTP_400_BAD_REQUEST)
+        data = request.data
+        result = [
+            {
+                'error': 0,
+                'response': 'success'
+            }
+        ]
+        email = data['email']
+        password = data['password']
+        x = Aspirant.objects.filter(email=email, password=password)
+        if x:
+            result[0]['a_id'] = x[0].id
+            return Response(result, status=status.HTTP_200_OK)
+        x = Company.objects.filter(email=email, password=password)
+        if x:
+            result[0]['c_id'] = x[0].id
+            return Response(result, status=status.HTTP_200_OK)
+        x = NGO.objects.filter(email=email, password=password)
+        if x:
+            result[0]['n_id'] = x[0].id
+            return Response(result, status=status.HTTP_200_OK)
+        else:
+            return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
 
 # adding multiple interest

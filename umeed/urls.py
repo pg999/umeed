@@ -12,7 +12,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^aspirant/$', views.AspirantsList.as_view()),
     url(r'^login/$', views.LoginList.as_view()),
-    url(r'^ngosignup/$', NGO.as_view()),
+    url(r'^ngosignup/$', ngo.as_view()),
     url(r'^course/(?P<id>[0-9]+)/$', CourseList.as_view()),
     url(r'^workshop/(?P<id>[0-9]+)/$', WorkshopList.as_view()),
     url(r'^module/$', ModuleList.as_view()),
@@ -37,4 +37,5 @@ urlpatterns = [
     url(r'^searchcourse/$', searchCourse.as_view()),  # added
     url(r'^searchjob/$', searchJob.as_view()),  # added
     url(r'^loadcourses/$', loadcourses.as_view()),  # added
+    url(r'^studentanalysis/$', student_analysisList.as_view()),  # added
 ]
